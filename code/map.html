@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Google map show</title>
+    <meta charset="UTF-8">
+    <style>
+      #map-canvas {height: 400px; width: 500px;}
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0JklJFJPQgsiOhOgzB-b5iik7s_qfSD4&callback=initMap"
+  type="text/javascript">
+    </script>
+  </head>
+  <body>
+  	<div id="map-canvas"></div>
+
+<script type="text/javascript" language="javascript">
+	var map;
+  var mapOptions;
+
+  function initMap() {
+    // Enabling new cartography and themes
+    google.maps.visualRefresh = true;
+
+    // Setting starting options
+    mapOptions = {
+        center: new google.maps.LatLng(42.361278, -83.070620),  //default center is id=10 point
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    // Getting Map DOM Element
+    var mapElement = document.getElementById('map-canvas');
+
+    // Creating a map with DOM element
+    map = new google.maps.Map(mapElement, mapOptions);
+
+    //add markers one by one
+    var i = 1;
+    var interval = setInterval(function () {
+      var url="http://localhost/hw5/search.php?index=" + i;
+      console.log("i in url is "+ i); 
+      $.getJSON(url, function(data) {
+            
+        var coord = new google.maps.LatLng(data["lat"], data["lng"]);
+        console.log("load the "+ data["id"]+ "th point.");
+       
+        var marker = new google.maps.Marker({
+          map: map,
+          draggable: true,
+          animation: google.maps.Animation.DROP,
+          position: coord
+        });
+
+        console.log("Automately add the "+ data["id"] + "th point.");
+
+      });
+      i+=100; //mark every other 100 point
+      if (i > 8881) clearInterval(interval);
+    }, 1000);
+  }
+</script>
+  </body>
+</html>
